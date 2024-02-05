@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Diabetic Retinopathy Prediction</title>
+        <style>
+            * {
+                font-size: 30px;
+            }
+        </style>
+    </head>
+    <body>
+        <input id="image-selector" type="file"/>
+        <button id='predict-button'>Predict</button>
+        <p style="font-weight:bold">Predictions</p>
+        <p>No DR: <span id="stage0-prediction"></span></p>
+        <p>Mild: <span id="stage1-prediction"></span></p>
+        <p>Moderate: <span id="stage2-prediction"></span></p>
+        <p>Severe: <span id="stage3-prediction"></span></p>
+        <p>Proliferative: <span id="stage4-prediction"></span></p>
+        <img id="selected-image" src=""/>
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+            let base64Image;
+            $("#image-selector").change(function(){
+                let reader = new FileReader();
+                reader.onload = function(e){
+                    let dataURL = reader.result
+                    $('#selected-image').attr('src', dataURL)
+                    let [, base64Data] = dataURL.split(',');
+                    base64Image = base64Data;
+
+                    console.log(base64Image);
+                }
+                reader.readAsDataURL($("#image-selector")[0].files[0]);
+                $("#stage0-prediction").text('');
+                $("#stage1-prediction").text('');
+                $("#stage2-prediction").text('');
+                $("#stage3-prediction").text('');
+                $("#stage4-prediction").text('');
+            });
+
+            $("#predict-button").click(function(event){
+                let message = {
+                    image: base64Image
+                }
+                
+                console.log(message)
+                $.post("http://127.0.0.1:5000/predict", JSON.stringify(message), function(response){
+                    $("#stage0-prediction").text(response.prediction.NoDR.toFixed(6));
+                    $("#stage1-prediction").text(response.prediction.Mild.toFixed(6));
+                    $("#stage2-prediction").text(response.prediction.Moderate.toFixed(6));
+                    $("#stage3-prediction").text(response.prediction.Severe.toFixed(6));
+                    $("#stage4-prediction").text(response.prediction.Proliferative.toFixed(6));
+                    console.log(response);
+                });
+
+            })    
+            
+        </script>
+    </body>
+</html>
