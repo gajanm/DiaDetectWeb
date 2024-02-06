@@ -5,6 +5,7 @@ from PIL import Image
 import keras
 from keras import backend as K
 from keras.models import Sequential
+from scipy.ndimage import gaussian_filter
 from keras.models import load_model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import img_to_array
@@ -24,6 +25,7 @@ def preprocess_image(image, target_size):
         image = image.convert ("RGB")
     image = image.resize(target_size)
     image = img_to_array(image)
+    #image = gaussian_filter(image, sigma=0.1)
     image = np.expand_dims(image, axis=0)
     
     return image

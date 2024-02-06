@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Diabetic Retinopathy Prediction</title>
-        <style>
-            * {
-                font-size: 30px;
-            }
-        </style>
+        <title>DiaDetect</title>
+        <link rel="stylesheet" href="/static/styles.css">
+
     </head>
     <body>
+        <header>
+            <h1>DiaDetect</h1>
+        </header>
         <input id="image-selector" type="file"/>
         <button id='predict-button'>Predict</button>
         <p style="font-weight:bold">Predictions</p>
-        <p>No DR: <span id="stage0-prediction"></span></p>
+        <p >No DR: <span id="stage0-prediction"></span></p>
         <p>Mild: <span id="stage1-prediction"></span></p>
         <p>Moderate: <span id="stage2-prediction"></span></p>
         <p>Severe: <span id="stage3-prediction"></span></p>
         <p>Proliferative: <span id="stage4-prediction"></span></p>
+        <p class="confidence-level" id="confidence-level"></p>
+
         <img id="selected-image" src=""/>
         
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -47,11 +49,39 @@
                 
                 console.log(message)
                 $.post("http://127.0.0.1:5000/predict", JSON.stringify(message), function(response){
-                    $("#stage0-prediction").text(response.prediction.NoDR.toFixed(6));
-                    $("#stage1-prediction").text(response.prediction.Mild.toFixed(6));
-                    $("#stage2-prediction").text(response.prediction.Moderate.toFixed(6));
-                    $("#stage3-prediction").text(response.prediction.Severe.toFixed(6));
-                    $("#stage4-prediction").text(response.prediction.Proliferative.toFixed(6));
+                    $("#stage0-prediction").text(`${(response.prediction.NoDR * 100).toFixed(2)}%`);
+                    $("#stage1-prediction").text(`${(response.prediction.Mild * 100).toFixed(2)}%`);
+                    $("#stage2-prediction").text(`${(response.prediction.Moderate * 100).toFixed(2)}%`);
+                    $("#stage3-prediction").text(`${(response.prediction.Severe * 100).toFixed(2)}%`);
+                    $("#stage4-prediction").text(`${(response.prediction.Proliferative * 100).toFixed(2)}%`);
+
+                    let maxConfidence = Math.max(
+                        response.prediction.NoDR,
+                        response.prediction.Mild,
+                        response.prediction.Moderate,
+                        response.prediction.Severe,
+                        response.prediction.Proliferative
+                    );
+
+                    let stage = '';
+                    if (maxConfidence === response.prediction.NoDR) {
+                        stage = 'no';
+                    } else if (maxConfidence === response.prediction.Mild) {
+                        stage = 'mild';
+                    } else if (maxConfidence === response.prediction.Moderate) {
+                        stage = 'moderate';
+                    } else if (maxConfidence === response.prediction.Severe) {
+                        stage = 'severe';
+                    } else {
+                        stage = 'proliferative';
+                    }
+
+                    // Display the highest confidence level and corresponding stage
+                    $("#confidence-level").text(`The model predicts that this image shows signs of ${stage} diabetic retinopathy.`);
+
+
+
+
                     console.log(response);
                 });
 

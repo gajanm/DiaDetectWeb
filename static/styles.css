@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+}
+
+#image-selector,
+#predict-button,
+#selected-image {
+    margin-bottom: 20px;
+}
+
+#selected-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#predict-button {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+#predict-button:hover {
+    background-color: #45a049;
+}
+
+#confidence-level {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333;
+    font-weight: 700;
+}
+
+/* Additional styling for predictions */
+#stage0-prediction,
+#stage1-prediction,
+#stage2-prediction,
+#stage3-prediction,
+#stage4-prediction {
+    font-size: 18px;
+    margin: 5px 0;
+    color: #333;
+}
+
+/* Add other styles as needed */
